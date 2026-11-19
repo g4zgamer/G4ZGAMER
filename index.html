@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#080808">
+<title>G4Z GAMER - Nickname Generator</title>
+<style>
+:root{--bg:#080808;--panel:#202020;--panel2:#111;--text:#f5f5f5;--muted:#aaa;--line:#353535;--red:#ed303b;--red2:#d92732;--accent:var(--red);--accent-ink:#fff;--counter-green:#35c879;--counter-warn:#ff9f1c;--counter-yellow:#f4d03f;--counter-red:#ff4b55;--counter-final:#b56cff}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Georgia,"Times New Roman",serif}
+body.light{--bg:#f4f4f4;--panel:#fff;--panel2:#eee;--text:#171717;--muted:#555;--line:#ccc;--accent:#315fba;--accent-ink:#fff}
+header{height:82px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;padding:0 18px;position:relative}
+.logo{font-size:29px;font-weight:bold;letter-spacing:.5px}.logo span{color:var(--accent)}
+.head-actions{display:flex;gap:10px}
+.icon-btn{width:56px;height:56px;border:0;border-radius:14px;background:var(--panel);color:var(--text);font-size:26px;cursor:pointer}
+main{width:100%;max-width:1200px;margin:0 auto;padding:0 10px 40px}
+.intro{text-align:center;color:var(--muted);font-size:19px;line-height:1.5;margin:8px 0 28px}
+.input-card{width:100%;background:var(--panel);border:2px solid var(--line);border-radius:18px;padding:14px;position:relative}
+.input-note{font:11px/1.35 Arial,sans-serif;color:var(--muted);margin:0 0 7px 3px}
+.input-note[hidden]{display:none}
+.input-row{display:flex;gap:9px;align-items:center}
+input{display:block;width:100%;min-width:0;flex:1;height:62px;background:var(--bg);border:2px solid var(--line);border-radius:12px;color:var(--text);font:clamp(18px,4.5vw,24px) Georgia,serif;padding:0 14px;outline:none}
+input:focus{border-color:#777}
+.clear{height:62px;width:48px;flex:0 0 48px;border:0;border-radius:12px;background:#444;color:white;font-size:27px;cursor:pointer}
+.counter-row{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;margin:7px 0 10px}.counter{text-align:right;color:var(--muted);font-size:14px;white-space:nowrap}.counter strong{font-weight:bold}.counter.green{color:var(--counter-green)}.counter.warning{color:var(--counter-warn)}.counter.yellow{color:var(--counter-yellow)}.counter.red{color:var(--counter-red)}.counter.final{color:var(--counter-final)}.game-hints{display:flex;flex-direction:column;gap:3px;min-width:0}.game-hint{font:11px/1.25 Arial,sans-serif;color:var(--muted);opacity:.78}.game-hint.alert{color:var(--counter-red);opacity:.9;font-weight:600}.game-hint[hidden]{display:none}.ascii-design{white-space:pre;overflow-x:auto;font: bold 13px/1.25 monospace;text-align:left}.option.ascii-design{font-size:12px}
+.action-row{display:flex;gap:9px;align-items:stretch}
+.generate{height:54px;flex:1;min-width:0;border:0;border-radius:12px;background:var(--accent);color:var(--accent-ink);font:bold 19px Georgia,serif;cursor:pointer}
+.visible{height:54px;flex:0 0 112px;border:0;border-radius:12px;background:var(--accent);color:var(--accent-ink);font:bold 14px Georgia,serif;cursor:pointer}
+button:active{transform:scale(.985)}
+.tabs{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:15px 0 24px}
+.tab{min-height:52px;border:1px solid var(--line);border-radius:11px;background:var(--panel);color:var(--text);font:bold 13px Georgia,serif;cursor:pointer;padding:8px 3px}
+.tab.active{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.category-strip{display:flex;gap:8px;overflow-x:auto;overflow-y:hidden;white-space:nowrap;padding:2px 1px 12px;margin:0 0 8px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+.category-strip::-webkit-scrollbar{display:none}
+.category-chip{flex:0 0 auto;border:1px solid var(--line);border-radius:999px;background:var(--panel);color:var(--muted);padding:10px 16px;font: bold 11px Arial,sans-serif;letter-spacing:.5px;cursor:pointer}
+.category-chip.active{background:linear-gradient(100deg,var(--accent),#8b5cf6);border-color:transparent;color:var(--accent-ink)}
+.tab-panel{display:none;background:var(--panel);border:1px solid var(--line);border-radius:15px;padding:11px;margin:-10px 0 22px;max-height:440px;overflow-y:auto;overscroll-behavior:contain;scrollbar-width:thin}
+.tab-panel.open{display:block}
+.panel-search{width:100%;height:46px;min-height:46px;margin:0 0 11px;padding:0 13px;border:1px solid var(--line);border-radius:10px;background:var(--bg);color:var(--text);font:16px Arial,sans-serif;position:sticky;top:0;z-index:1}
+.option-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.option{white-space:pre-wrap;min-height:48px;border:1px solid var(--line);border-radius:10px;background:var(--panel2);color:var(--text);padding:11px 8px;font-size:16px;cursor:pointer;overflow-wrap:anywhere;word-break:break-word}
+.section-head{display:flex;justify-content:space-between;align-items:flex-end;margin:28px 0 18px;gap:10px}
+.section-title-wrap{display:flex;flex-direction:column;gap:4px;min-width:0}
+.section-head h2{font-size:26px;margin:0}
+.limit-badge{font:11px/1.25 Arial,sans-serif;color:var(--muted);letter-spacing:.2px}
+.count{color:var(--muted);font-size:15px;white-space:nowrap}
+.name-list{display:flex;flex-direction:column;gap:13px}
+.name-item{min-height:96px;background:var(--panel);border:2px solid var(--line);border-radius:16px;padding:14px 15px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.name-main{display:flex;flex-direction:column;gap:7px;min-width:0;flex:1}
+.card-cat-tag{display:inline-block;align-self:flex-start;font:9px/1 Arial,sans-serif;letter-spacing:.8px;text-transform:uppercase;color:var(--muted);background:var(--panel2);border:1px solid var(--line);border-radius:999px;padding:3px 8px}
+.nickname{font-size:23px;overflow-wrap:anywhere;word-break:break-word;min-width:0}
+.card-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.react-btn{display:inline-flex;align-items:center;gap:4px;border:1px solid var(--line);background:var(--panel2);color:var(--muted);border-radius:999px;padding:3px 9px;font:12px Arial,sans-serif;cursor:pointer;line-height:1.2}
+.react-btn.active{border-color:var(--accent);color:var(--text);background:rgba(255,255,255,0.06)}
+body.light .react-btn.active{background:rgba(0,0,0,0.05)}
+.copy-stat{font:11px Arial,sans-serif;color:var(--muted);opacity:.85;margin-left:2px}
+.copy-btn{flex:0 0 100px;height:56px;border:0;border-radius:11px;background:var(--accent);color:var(--accent-ink);font:18px Georgia,serif;cursor:pointer}
+.learn{display:block;width:100%;height:56px;margin:20px 0;background:var(--panel);border:1px solid var(--line);border-radius:13px;color:var(--text);font:bold 18px Georgia,serif;cursor:pointer}.learn:disabled{opacity:.55;cursor:not-allowed}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:#292929;color:white;padding:12px 18px;border-radius:30px;font:15px Arial,sans-serif;opacity:0;pointer-events:none;transition:opacity .2s;z-index:10;max-width:90%;text-align:center}
+.toast.show{opacity:1}
+.menu{display:none;position:absolute;right:18px;top:74px;background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:8px;z-index:5;min-width:165px}
+.menu.open{display:block}.menu button{display:block;width:100%;text-align:left;padding:12px;background:transparent;color:var(--text);border:0;font:16px Georgia,serif;cursor:pointer}.menu button.restart-item{border-top:1px solid var(--line);margin-top:6px;padding-top:12px;color:var(--accent)}.palette-box{margin:7px 4px 4px;padding:8px;border:1px solid var(--line);border-radius:11px;background:var(--bg)}.palette-title{padding:3px 4px 9px;color:var(--muted);font:bold 12px Arial,sans-serif;letter-spacing:.6px}.color-palette{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;padding:3px 4px 5px}.color-palette button{width:29px;height:29px;border:2px solid #fff;border-radius:50%;padding:0;cursor:pointer;justify-self:center;box-shadow:0 0 0 1px var(--line)}.color-palette button:focus{outline:2px solid var(--text);outline-offset:2px}.color-palette button[data-color="#ed303b"]{background:#ed303b}.color-palette button[data-color="#e5b72f"]{background:#e5b72f}.color-palette button[data-color="#20a765"]{background:#20a765}.color-palette button[data-color="#2878e5"]{background:#2878e5}
+.info{display:none;background:var(--panel);padding:16px;border-radius:14px;margin:15px 0;color:var(--muted);line-height:1.5}
+.letter-heading{grid-column:1/-1;color:var(--red);font-weight:bold;padding:8px 2px 2px;margin-top:5px;border-bottom:1px solid var(--line)}
+@media(max-width:520px){
+ header{height:78px;padding:0 12px}.logo{font-size:25px}.icon-btn{width:51px;height:51px}
+ main{width:100%;max-width:100%;padding:0 4px 30px}
+ .intro{font-size:17px;margin:8px 2px 22px}
+ .input-card{padding:11px 8px}
+ input{height:60px;font-size:clamp(17px,5vw,22px);padding:0 11px}
+ .clear{height:60px;width:45px;flex-basis:45px}
+ .generate,.visible{height:52px}.visible{flex-basis:100px;font-size:13px}
+ .tabs{gap:6px;margin:13px 0 22px}
+ .category-chip{padding:9px 14px;font-size:10px}.tab{font-size:11px;min-height:50px;padding:7px 1px}
+ .section-head h2{font-size:23px}.nickname{font-size:21px}
+ .name-item{padding:13px 12px;min-height:88px}.copy-btn{flex-basis:88px;height:52px;font-size:16px}
+ .tab-panel{max-height:55vh}.game-hint{font-size:10px}
+ .option{font-size:15px;padding:10px 6px}
+}
+@media(max-width:360px){
+ main{padding-left:4px;padding-right:4px}
+ .logo{font-size:22px}.head-actions{gap:7px}
+ .icon-btn{width:46px;height:46px}
+ .visible{flex-basis:84px;font-size:11px}
+ .tab{font-size:10px}
+ .copy-btn{flex-basis:78px}
+ .nickname{font-size:19px}
+}
+
+/* Modal Popup Styling */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.75);z-index:9999;display:flex;align-items:center;justify-content:center;padding:12px;backdrop-filter:blur(3px)}
+.modal-overlay[hidden]{display:none !important}
+.modal-card{width:100%;max-width:700px;max-height:85vh;background:var(--panel);border:2px solid var(--line);border-radius:20px;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 12px 40px rgba(0,0,0,0.6)}
+.modal-header{padding:16px 20px;border-bottom:1px solid var(--line);display:flex;align-items:center;justify-content:space-between;background:var(--panel2)}
+.modal-title-wrap h2{margin:0;font-size:22px}
+.modal-close{width:42px;height:42px;border:0;border-radius:50%;background:var(--panel);color:var(--text);font-size:26px;cursor:pointer;display:flex;align-items:center;justify-content:center;border:1px solid var(--line)}
+.modal-close:hover{background:var(--accent);color:var(--accent-ink)}
+.modal-body{padding:16px;overflow-y:auto;display:flex;flex-direction:column;gap:12px;flex:1;scrollbar-width:thin}
+.modal-empty{text-align:center;color:var(--muted);padding:30px 10px;font-size:16px}
+.delete-btn{background:rgba(237,48,59,0.15)!important;border-color:var(--red)!important;color:var(--red)!important}
+
+</style>
+</head>
+<body>
+<header>
+  <div class="logo">G4Z <span>GAMER</span></div>
+  <div class="head-actions">
+    <button class="icon-btn" id="themeBtn" aria-label="Change theme">☼</button>
+    <button class="icon-btn" id="menuBtn" aria-label="Open menu">☰</button>
+  </div>
+  <div class="menu" id="menu">
+    <button data-info="home">Home</button>
+    <button data-info="about">About</button>
+    <button data-info="contact">Contact</button>
+    <button type="button" id="savedMenuBtn">Pin 📌 (<span id="savedMenuCount">0</span>)</button>
+    <div class="palette-box">
+      <div class="palette-title">CHOOSE COLOR</div>
+      <div class="color-palette">
+        <button type="button" data-color="#ed303b" aria-label="Red"></button>
+        <button type="button" data-color="#e5b72f" aria-label="Yellow"></button>
+        <button type="button" data-color="#20a765" aria-label="Green"></button>
+        <button type="button" data-color="#2878e5" aria-label="Blue"></button>
+        <button type="button" data-color="#8b5cf6" aria-label="Purple"></button>
+        <button type="button" data-color="#ff7a00" aria-label="Orange"></button>
+        <button type="button" data-color="#ff4fa3" aria-label="Pink"></button>
+        <button type="button" data-color="#00bcd4" aria-label="Cyan"></button>
+        <button type="button" data-color="#00a6a6" aria-label="Teal"></button>
+        <button type="button" data-color="#a3a3a3" aria-label="Silver"></button>
+        <button type="button" data-color="#f5f5f5" aria-label="White"></button>
+        <button type="button" data-color="#a3e635" aria-label="Lime"></button>
+      </div>
+    </div>
+    <button type="button" class="restart-item" id="restartBtn">Restart</button>
+  </div>
+</header>
+<main>
+  <p class="intro">Create stylish gaming nicknames with unique fonts, symbols and designs. Enter your name and explore your nickname styles.</p>
+  <section class="input-card">
+    <div class="input-note" id="loveInputNote" hidden>You can enter full names or short initials for two people.</div>
+    <div class="input-row">
+      <input id="nameInput" maxlength="50" placeholder="Enter Your Name" autocomplete="off">
+      <button class="clear" id="clearBtn" aria-label="Clear name">×</button>
+    </div>
+    <div class="counter-row"><div class="game-hints" aria-live="polite"><div class="game-hint alert" id="limitError" hidden></div></div><div class="counter green" id="counterBox"><strong id="counter">0</strong></div></div>
+    <div class="action-row">
+      <button class="generate" id="generateBtn">GENERATE</button>
+      <button class="visible" id="visibleBtn" title="Copy invisible space">VISIBLE</button>
+    </div>
+  </section>
+
+  <div class="tabs" id="tabs">
+    <button class="tab" data-tab="design">DESIGN</button>
+    <button class="tab" data-tab="fonts">FONTS</button>
+    <button class="tab" data-tab="symbols">SYMBOLS</button>
+    <button class="tab" data-tab="spelling">SPELLING<br>DESIGN</button>
+  </div>
+  <nav class="category-strip" aria-label="Nickname categories">
+    <button class="category-chip active" type="button" data-category="ALL">ALL</button>
+    <button class="category-chip" type="button" data-category="PUBG">PUBG</button>
+    <button class="category-chip" type="button" data-category="FREE FIRE">FREE FIRE</button>
+    <button class="category-chip" type="button" data-category="BGMI">BGMI</button>
+    <button class="category-chip" type="button" data-category="LOVE">LOVE</button>
+    <button class="category-chip" type="button" data-category="BOY">BOY</button>
+    <button class="category-chip" type="button" data-category="ATTITUDE">ATTITUDE</button>
+    <button class="category-chip" type="button" data-category="POPULAR">POPULAR</button>
+    <button class="category-chip" type="button" data-category="SYMBOLS">SYMBOLS</button>
+  </nav>
+  <div class="tab-panel" id="design"><input class="panel-search" id="designName" maxlength="50" placeholder="Enter Name" aria-label="Design name"><div class="option-grid" id="designOptions"></div></div>
+  <div class="tab-panel" id="fonts"><input class="panel-search" id="fontsName" maxlength="50" placeholder="Enter Name" aria-label="Font name"><div class="option-grid" id="fontOptions"></div></div>
+  <div class="tab-panel" id="symbols"><input class="panel-search" id="symbolsSearch" placeholder="Search Symbols" aria-label="Search symbols"><div class="option-grid" id="symbolOptions"></div></div>
+  <div class="tab-panel" id="spelling"><input class="panel-search" id="spellingName" maxlength="50" placeholder="Enter Letter or Name" aria-label="Spelling design name"><div class="option-grid" id="spellingOptions"></div></div>
+
+  <div class="section-head">
+    <div class="section-title-wrap">
+      <h2>Nickname Designs</h2>
+      <div class="limit-badge" id="categoryLimitBadge">ALL Limit: up to 50 chars</div>
+    </div>
+    <span class="count" id="resultCount">22 Nicknames</span>
+  </div>
+  <div class="name-list" id="nameList"></div>
+  <button class="learn" id="learnBtn">LEARN MORE</button>
+  <div class="info" id="infoBox"></div>
+</main>
+<div class="toast" id="toast">Copied!</div>
+
+<!-- Pinned / Saved Nicknames Modal Box -->
+<div class="modal-overlay" id="pinnedModal" hidden>
+  <div class="modal-card">
+    <div class="modal-header">
+      <div class="modal-title-wrap">
+        <h2>Pinned Nicknames</h2>
+        <div class="limit-badge" id="pinnedCountBadge">0 nicknames pinned</div>
+      </div>
+      <button class="modal-close" id="modalCloseBtn" aria-label="Close modal">×</button>
+    </div>
+    <div class="modal-body" id="pinnedListContainer"></div>
+  </div>
+</div>
+
+<script>
+const input=document.getElementById('nameInput');
+const list=document.getElementById('nameList');
+const toast=document.getElementById('toast');
+const invisibleSpace='ㅤ';
+let generatedMode=false, toastTimer;
+const shownDesigns=new Set();
+
+// Persistent localStorage stats & saved nicknames per browser/device
+const STORAGE_KEY='g4z_gamer_card_stats_v2';
+const SAVED_STORAGE_KEY='g4z_gamer_saved_nicknames_v1';
+let cardStats={};
+let savedNicknames=[];
+let viewingSaved=false;
+try{
+ const saved=localStorage.getItem(STORAGE_KEY);
+ if(saved)cardStats=JSON.parse(saved)||{};
+}catch(e){cardStats={};}
+try{
+ const savedList=localStorage.getItem(SAVED_STORAGE_KEY);
+ if(savedList){
+  const parsed=JSON.parse(savedList);
+  if(Array.isArray(parsed))savedNicknames=parsed;
+ }
+}catch(e){savedNicknames=[];}
+function saveCardStats(){
+ try{localStorage.setItem(STORAGE_KEY,JSON.stringify(cardStats));}catch(e){}
+}
+function persistSavedNicknames(){
+ try{localStorage.setItem(SAVED_STORAGE_KEY,JSON.stringify(savedNicknames));}catch(e){}
+ updateSavedMenuCount();
+}
+function updateSavedMenuCount(){
+ const badge=document.getElementById('savedMenuCount');
+ if(badge)badge.textContent=savedNicknames.length;
+}
+function isNicknameSaved(text){
+ return savedNicknames.some(item=>item.text===text);
+}
+function toggleSaveNickname(entry){
+ const idx=savedNicknames.findIndex(item=>item.text===entry.text);
+ if(idx!==-1){
+  savedNicknames.splice(idx,1);
+  persistSavedNicknames();
+  showToast('Removed from Save');
+  return false;
+ }else{
+  savedNicknames.unshift({text:entry.text,category:entry.category||'SAVED'});
+  persistSavedNicknames();
+  showToast('Saved!');
+  return true;
+ }
+}
+function getCardStat(key){
+ if(!cardStats[key]||typeof cardStats[key]!=='object'){
+  cardStats[key]={likes:0,dislikes:0,copies:0,vote:null};
+ }
+ const s=cardStats[key];
+ let vote=s.vote==='like'||s.vote==='dislike'?s.vote:null;
+ if(!vote){
+  if(s.liked)vote='like';
+  else if(s.disliked)vote='dislike';
+ }
+ return {
+  likes:Math.max(0,Number(s.likes)||0),
+  dislikes:Math.max(0,Number(s.dislikes)||0),
+  copies:Math.max(0,Number(s.copies)||0),
+  vote
+ };
+}
+
+const categoryConfig={
+ 'ALL':{limit:50,label:'ALL Limit: 50 characters'},
+ 'PUBG':{limit:14,label:'PUBG Limit: 14 characters'},
+ 'FREE FIRE':{limit:12,label:'FREE FIRE Limit: 12 characters'},
+ 'BGMI':{limit:14,label:'BGMI Limit: 14 characters'},
+ 'LOVE':{limit:16,label:'LOVE Limit: 16 characters'},
+ 'BOY':{limit:16,label:'BOY Limit: 16 characters'},
+ 'ATTITUDE':{limit:16,label:'ATTITUDE Limit: 16 characters'},
+ 'POPULAR':{limit:16,label:'POPULAR Limit: 16 characters'},
+ 'SYMBOLS':{limit:20,label:'SYMBOLS Limit: 20 characters'}
+};
+
+const categoryTemplates={
+ 'PUBG':[
+  '亗 {n} 亗','『 {n} 』','乂 {n} 乂','♛ {n} ♛','么 {n} 么','彡 {n} 彡',
+  '〆 {n} 〆','꧁༺ {n} ༻꧂','⚡ {n} ⚡','♠ {n} ♠','★彡 {n} 彡★','۝ {n} ۝',
+  '乄 {n} 乄','メ {n} メ'
+ ],
+ 'FREE FIRE':[
+  '꧁ {n} ꧂','亗 {n} 亗','乂 {n} 乂','么 {n} 么','彡 {n} 彡','★彡 {n} 彡★',
+  '᭄ {n} ᭄','『 {n} 』','࿐ {n} ࿐','メ {n} メ','⚡ {n} ⚡','꧁༺ {n} ༻꧂',
+  '×͜× {n} ×͜×','☠ {n} ☠'
+ ],
+ 'BGMI':[
+  '♛ {n} ♛','〆 {n} 〆','『 {n} 』','⚡ {n} ⚡','♠ {n} ♠','༺ {n} ༻',
+  '۝ {n} ۝','亗 {n} 亗','乂 {n} 乂','♕ {n} ♕','彡 {n} 彡','꧁ {n} ꧂',
+  '么 {n} 么','☯ {n} ☯'
+ ],
+ 'BOY':[
+  '亗 {n} 亗','乂 {n} 乂','♛ {n} ♛','⚡ {n} ⚡','么 {n} 么','彡 {n} 彡',
+  '『 {n} 』','ツ {n} ツ','★ {n} ★','メ {n} メ','♠ {n} ♠','༒ {n} ༒'
+ ],
+ 'ATTITUDE'
